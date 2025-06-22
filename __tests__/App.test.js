@@ -1,7 +1,19 @@
-import { createElement } from 'react';
-import App from '../App.js';
+import React from 'react';
+import { render, fireEvent } from '@testing-library/react-native';
+import App from '../App';
 
-test('App renders root view', () => {
-  const element = createElement(App);
-  expect(element.type).toBe(App);
+test('App navigates between screens', () => {
+  const { getByText } = render(<App />);
+
+  // initial screen
+  expect(getByText('Home Screen')).toBeTruthy();
+
+  fireEvent.press(getByText('Login'));
+  expect(getByText('Login Screen')).toBeTruthy();
+
+  fireEvent.press(getByText('Schedule'));
+  expect(getByText('Schedule Screen')).toBeTruthy();
+
+  fireEvent.press(getByText('Home'));
+  expect(getByText('Home Screen')).toBeTruthy();
 });

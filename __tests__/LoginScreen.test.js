@@ -1,7 +1,8 @@
-import { createElement } from 'react';
-import LoginScreen from '../screens/LoginScreen.js';
+import React from 'react';
+import { render } from '@testing-library/react-native';
+import LoginScreen from '../screens/LoginScreen';
 
-test('LoginScreen renders', () => {
-  const element = createElement(LoginScreen);
-  expect(element.type).toBe(LoginScreen);
+test('displays Login Screen header', () => {
+  const { getByRole } = render(<LoginScreen />);
+  expect(getByRole('header').props.children).toBe('Login Screen');
 });
