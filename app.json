@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "boys-state-app",
-    "slug": "boys-state-app",
+    "name": "Boys State Demo",
+    "slug": "boys-state-demo",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",

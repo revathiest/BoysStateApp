@@ -19,7 +19,7 @@ This app is **not** specific to any one state or program and is intended to be *
 
 ## Project Status
 
-**This project is in the initial setup phase.**  
+**This project is in the initial setup phase.** Basic navigation screens are included for initial testing.  
 Core requirements and architecture are being defined. No stable code or release yet.
 
 ---
