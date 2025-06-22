@@ -1,7 +1,8 @@
-import { createElement } from 'react';
-import ScheduleScreen from '../screens/ScheduleScreen.js';
+import React from 'react';
+import { render } from '@testing-library/react-native';
+import ScheduleScreen from '../screens/ScheduleScreen';
 
-test('ScheduleScreen renders', () => {
-  const element = createElement(ScheduleScreen);
-  expect(element.type).toBe(ScheduleScreen);
+test('displays Schedule Screen header', () => {
+  const { getByRole } = render(<ScheduleScreen />);
+  expect(getByRole('header').props.children).toBe('Schedule Screen');
 });

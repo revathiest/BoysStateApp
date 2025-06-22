@@ -1,7 +1,8 @@
-import { createElement } from 'react';
-import HomeScreen from '../screens/HomeScreen.js';
+import React from 'react';
+import { render } from '@testing-library/react-native';
+import HomeScreen from '../screens/HomeScreen';
 
-test('HomeScreen renders', () => {
-  const element = createElement(HomeScreen);
-  expect(element.type).toBe(HomeScreen);
+test('displays Home Screen header', () => {
+  const { getByRole } = render(<HomeScreen />);
+  expect(getByRole('header').props.children).toBe('Home Screen');
 });
