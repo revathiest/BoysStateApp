@@ -2,6 +2,11 @@ import React from 'react';
 import { render, fireEvent } from '@testing-library/react-native';
 import App from '../App';
 
+beforeEach(() => {
+  fetch.mockReset();
+  fetch.mockResolvedValue({ json: () => Promise.resolve({}) });
+});
+
 test('App navigates between screens', () => {
   const { getByText } = render(<App />);
 
