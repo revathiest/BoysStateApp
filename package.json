@@ -1,32 +1,30 @@
 {
   "name": "boys-state-app",
-  "license": "0BSD",
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "start": "expo start",
-    "android": "expo start --android",
-    "ios": "expo start --ios",
-    "web": "expo start --web",
+    "start": "expo start -c",
+    "android": "expo start -c --android",
+    "ios": "expo start -c --ios",
+    "web": "expo start -c --web",
     "test": "node --no-deprecation -e \"process.stdout.write('\\x1Bc')\" && jest"
   },
   "dependencies": {
-    "@expo/metro-runtime": "~5.0.4",
     "expo": "~53.0.12",
     "expo-status-bar": "~2.2.3",
     "react": "19.0.0",
-    "react-dom": "19.0.0",
-    "react-native": "0.79.4",
-    "react-native-web": "^0.20.0",
-    "react-test-renderer": "19.0.0"
+    "react-native": "0.79.4"
   },
   "devDependencies": {
-    "@babel/core": "^7.27.4",
-    "@babel/preset-env": "^7.27.2",
+    "@babel/plugin-transform-class-properties": "^7.27.1",
+    "@babel/plugin-transform-private-methods": "^7.27.1",
+    "@babel/plugin-transform-private-property-in-object": "^7.27.1",
     "@testing-library/jest-native": "^5.4.3",
     "@testing-library/react-native": "^13.2.0",
     "jest": "^30.0.2",
-    "metro-react-native-babel-preset": "^0.77.0"
+    "metro-react-native-babel-preset": "^0.77.0",
+    "react-test-renderer": "^19.0.0"
   },
-  "private": true
+  "private": true,
+  "license": "Apache-2.0"
 }
