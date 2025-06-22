@@ -8,7 +8,7 @@
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
-    "test": "jest"
+    "test": "node --no-deprecation -e \"process.stdout.write('\\x1Bc')\" && jest"
   },
   "dependencies": {
     "@expo/metro-runtime": "~5.0.4",
