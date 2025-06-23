@@ -12,4 +12,11 @@ module.exports = {
     create: styles => styles,
     flatten: style => style,
   },
+  Platform: {
+    OS: 'ios',
+    select: objs => objs['ios'],
+  },
+  StatusBar: {
+    currentHeight: 0,
+  },
 };
