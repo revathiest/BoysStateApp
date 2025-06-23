@@ -1,12 +1,24 @@
 import React from 'react';
-import { View, Button, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+
+function NavButton({ title, onPress }) {
+  return (
+    <TouchableOpacity
+      accessibilityRole="button"
+      style={styles.button}
+      onPress={onPress}
+    >
+      <Text style={styles.buttonText}>{title}</Text>
+    </TouchableOpacity>
+  );
+}
 
 export default function NavigationBar({ navigate }) {
   return (
     <View style={styles.nav} testID="nav-bar">
-      <Button title="Home" onPress={() => navigate('Home')} />
-      <Button title="Login" onPress={() => navigate('Login')} />
-      <Button title="Schedule" onPress={() => navigate('Schedule')} />
+      <NavButton title="Home" onPress={() => navigate('Home')} />
+      <NavButton title="Login" onPress={() => navigate('Login')} />
+      <NavButton title="Schedule" onPress={() => navigate('Schedule')} />
     </View>
   );
 }
@@ -16,5 +28,16 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-around',
     paddingVertical: 10,
+    backgroundColor: '#eee',
+  },
+  button: {
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    backgroundColor: '#007AFF',
+    borderRadius: 4,
+  },
+  buttonText: {
+    color: '#fff',
+    fontWeight: 'bold',
   },
 });

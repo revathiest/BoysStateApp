@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, SafeAreaView } from 'react-native';
 import HomeScreen from './screens/HomeScreen';
 import LoginScreen from './screens/LoginScreen';
 import ScheduleScreen from './screens/ScheduleScreen';
@@ -14,11 +14,11 @@ export default function App() {
   else if (screen === 'Schedule') Current = ScheduleScreen;
 
   return (
-    <View style={styles.container} testID="app-root">
-      <Current />
+    <SafeAreaView style={styles.container} testID="app-root">
       <NavigationBar navigate={setScreen} />
+      <Current />
       <StatusBar style="auto" />
-    </View>
+    </SafeAreaView>
   );
 }
 
@@ -26,6 +26,5 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    justifyContent: 'center',
   },
 });
