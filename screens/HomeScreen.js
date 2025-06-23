@@ -3,7 +3,7 @@ import { View, Text, StyleSheet } from 'react-native';
 
 function getBaseUrl() {
   return __DEV__
-    ? 'http://localhost:3000'
+    ? 'http://192.168.1.171:3000'
     : 'https://boysstateappservices.up.railway.app';
 }
 
@@ -13,14 +13,16 @@ export default function HomeScreen() {
 
   useEffect(() => {
     let isMounted = true;
-    fetch(`${getBaseUrl()}/status`)
+    fetch(`${getBaseUrl()}/health`)
       .then((res) => res.json())
       .then((data) => {
+        console.log('1: ',data);
         if (!isMounted) return;
-        setApiStatus(data.api || 'unknown');
-        setDbStatus(data.db || 'unknown');
+        setApiStatus(data.status || 'unknown');
+        setDbStatus(data.database || 'unknown');
       })
-      .catch(() => {
+      .catch((error, data) => {
+        console.log('2: ',error);
         if (!isMounted) return;
         setApiStatus('error');
         setDbStatus('error');
@@ -33,6 +35,7 @@ export default function HomeScreen() {
   return (
     <View style={styles.container} testID="home-screen">
       <Text accessibilityRole="header">Home Screen</Text>
+      <Text>Base URL: {getBaseUrl()}</Text>
       <Text>API Status: {apiStatus || 'loading'}</Text>
       <Text>DB Status: {dbStatus || 'loading'}</Text>
     </View>

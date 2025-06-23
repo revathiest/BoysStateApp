@@ -19,20 +19,20 @@ test('displays Home Screen header', () => {
 
 test('fetches status from localhost in dev', async () => {
   global.__DEV__ = true;
-  fetch.mockResolvedValue({ json: () => Promise.resolve({ api: 'ok', db: 'ok' }) });
+  fetch.mockResolvedValue({ json: () => Promise.resolve({ database: 'ok', status: 'ok' }) });
   const { getByText } = render(<HomeScreen />);
 
-  await waitFor(() => expect(fetch).toHaveBeenCalledWith('http://localhost:3000/status'));
+  await waitFor(() => expect(fetch).toHaveBeenCalledWith('http://192.168.1.171:3000/health'));
   await waitFor(() => getByText('API Status: ok'));
   await waitFor(() => getByText('DB Status: ok'));
 });
 
 test('fetches status from production api in prod', async () => {
   global.__DEV__ = false;
-  fetch.mockResolvedValue({ json: () => Promise.resolve({ api: 'ok', db: 'ok' }) });
+  fetch.mockResolvedValue({ json: () => Promise.resolve({ database: 'ok', status: 'ok' }) });
   const { getByText } = render(<HomeScreen />);
 
-  await waitFor(() => expect(fetch).toHaveBeenCalledWith('https://boysstateappservices.up.railway.app/status'));
+  await waitFor(() => expect(fetch).toHaveBeenCalledWith('https://boysstateappservices.up.railway.app/health'));
   await waitFor(() => getByText('API Status: ok'));
   await waitFor(() => getByText('DB Status: ok'));
 });
