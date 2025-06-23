@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, SafeAreaView } from 'react-native';
+import { StatusBar as ExpoStatusBar } from 'expo-status-bar';
+import { StyleSheet, SafeAreaView, Platform, StatusBar } from 'react-native';
 import HomeScreen from './screens/HomeScreen';
 import LoginScreen from './screens/LoginScreen';
 import ScheduleScreen from './screens/ScheduleScreen';
@@ -17,7 +17,7 @@ export default function App() {
     <SafeAreaView style={styles.container} testID="app-root">
       <NavigationBar navigate={setScreen} />
       <Current />
-      <StatusBar style="auto" />
+      <ExpoStatusBar style="auto" />
     </SafeAreaView>
   );
 }
@@ -26,5 +26,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
+    paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
   },
 });
