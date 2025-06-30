@@ -7,13 +7,15 @@
     "android": "expo start -c --android",
     "ios": "expo start -c --ios",
     "web": "expo start -c --web",
-    "test": "node --no-deprecation -e \"process.stdout.write('\\x1Bc')\" && jest"
+    "test": "node --no-deprecation -e \"process.stdout.write('\\x1Bc')\" && jest",
+    "build": "npx eas build --platform android"
   },
   "dependencies": {
     "expo": "~53.0.12",
     "expo-status-bar": "~2.2.3",
     "react": "19.0.0",
-    "react-native": "0.79.4"
+    "react-native": "0.79.4",
+    "expo-linear-gradient": "~14.1.5"
   },
   "devDependencies": {
     "@babel/plugin-transform-class-properties": "^7.27.1",
