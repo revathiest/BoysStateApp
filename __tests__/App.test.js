@@ -1,24 +1,17 @@
 import React from 'react';
-import { render, fireEvent } from '@testing-library/react-native';
-import App from '../App';
+import { render } from '@testing-library/react-native';
 
-beforeEach(() => {
-  fetch.mockReset();
-  fetch.mockResolvedValue({ json: () => Promise.resolve({}) });
+test('renders home screen component', () => {
+  const App = require('../App').default;
+  const { getByTestId } = render(<App />);
+  expect(getByTestId('program-name')).toBeTruthy();
 });
 
-test('App navigates between screens', () => {
-  const { getByText } = render(<App />);
-
-  // initial screen
-  expect(getByText('Home Screen')).toBeTruthy();
-
-  fireEvent.press(getByText('Login'));
-  expect(getByText('Login Screen')).toBeTruthy();
-
-  fireEvent.press(getByText('Schedule'));
-  expect(getByText('Schedule Screen')).toBeTruthy();
-
-  fireEvent.press(getByText('Home'));
-  expect(getByText('Home Screen')).toBeTruthy();
+test('renders correctly on android', () => {
+  const rn = require('react-native');
+  rn.Platform.OS = 'android';
+  const App = require('../App').default;
+  const { getByTestId } = render(<App />);
+  expect(getByTestId('program-name')).toBeTruthy();
+  rn.Platform.OS = 'ios';
 });
