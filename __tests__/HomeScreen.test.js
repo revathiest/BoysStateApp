@@ -1,38 +1,54 @@
 import React from 'react';
-import { render, waitFor } from '@testing-library/react-native';
+import { render, fireEvent, waitFor } from '@testing-library/react-native';
 import HomeScreen from '../screens/HomeScreen';
 
 beforeEach(() => {
   fetch.mockReset();
-  fetch.mockResolvedValue({ json: () => Promise.resolve({}) });
 });
 
 afterEach(() => {
   delete global.__DEV__;
 });
 
-test('displays Home Screen header', () => {
+test('login fetches program and branding in dev', async () => {
   global.__DEV__ = true;
-  const { getByRole } = render(<HomeScreen />);
-  expect(getByRole('header').props.children).toBe('Home Screen');
+  fetch
+    .mockResolvedValueOnce({ json: () => Promise.resolve({ token: 't' }) })
+    .mockResolvedValueOnce({
+      json: () => Promise.resolve({ programs: [{ programId: 'abc', programName: 'Test Program' }] }),
+    })
+    .mockResolvedValueOnce({ json: () => Promise.resolve({ colors: { primary: '#111', secondary: '#222' } }) });
+
+  const { getByText, getByTestId } = render(<HomeScreen />);
+  fireEvent.press(getByText('Login'));
+
+  await waitFor(() => getByTestId('assigned-program'));
+
+  expect(fetch.mock.calls[0][0]).toBe('http://192.168.1.171:3000/login');
+  expect(fetch.mock.calls[1][0]).toBe('http://192.168.1.171:3000/user-programs/demo@example.com');
+  expect(fetch.mock.calls[2][0]).toBe('http://192.168.1.171:3000/api/branding-contact/abc');
+  expect(getByTestId('program-name').props.children).toContain('Test Program');
 });
 
-test('fetches status from localhost in dev', async () => {
+test('shows welcome message when logged out', () => {
   global.__DEV__ = true;
-  fetch.mockResolvedValue({ json: () => Promise.resolve({ database: 'ok', status: 'ok' }) });
   const { getByText } = render(<HomeScreen />);
-
-  await waitFor(() => expect(fetch).toHaveBeenCalledWith('http://192.168.1.171:3000/health'));
-  await waitFor(() => getByText('API Status: ok'));
-  await waitFor(() => getByText('DB Status: ok'));
+  expect(getByText("Log in to get started! You'll see your schedule and updates once you're signed in.")).toBeTruthy();
 });
 
-test('fetches status from production api in prod', async () => {
-  global.__DEV__ = false;
-  fetch.mockResolvedValue({ json: () => Promise.resolve({ database: 'ok', status: 'ok' }) });
-  const { getByText } = render(<HomeScreen />);
+test('logout clears program info', async () => {
+  global.__DEV__ = true;
+  fetch
+    .mockResolvedValueOnce({ json: () => Promise.resolve({ token: 't' }) })
+    .mockResolvedValueOnce({
+      json: () => Promise.resolve({ programs: [{ programId: 'abc', programName: 'Test Program' }] }),
+    })
+    .mockResolvedValueOnce({ json: () => Promise.resolve({ colors: {} }) });
 
-  await waitFor(() => expect(fetch).toHaveBeenCalledWith('https://boysstateappservices.up.railway.app/health'));
-  await waitFor(() => getByText('API Status: ok'));
-  await waitFor(() => getByText('DB Status: ok'));
+  const { getByText, queryByTestId } = render(<HomeScreen />);
+  fireEvent.press(getByText('Login'));
+  await waitFor(() => getByText('Logout'));
+  fireEvent.press(getByText('Logout'));
+
+  expect(queryByTestId('assigned-program')).toBeNull();
 });

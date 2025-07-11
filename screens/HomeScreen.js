@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity, Dimensions, Platform, StatusBar } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 
@@ -13,12 +13,57 @@ const COLORS = {
   transparent: 'rgba(255,255,255,0.08)',
 };
 
+const API_BASE = __DEV__
+  ? 'http://192.168.1.171:3000'
+  : 'https://boysstateappservices.up.railway.app';
+
 export default function HomeScreen() {
   const [loggedIn, setLoggedIn] = useState(false);
+  const [program, setProgram] = useState(null);
+  const [branding, setBranding] = useState(null);
+
+  useEffect(() => {
+    if (branding && branding.colors) {
+      COLORS.primary = branding.colors.primary || COLORS.primary;
+      COLORS.secondary = branding.colors.secondary || COLORS.secondary;
+    }
+  }, [branding]);
 
   // Handlers
-  const handleLogin = () => setLoggedIn(true);
-  const handleLogout = () => setLoggedIn(false);
+  const handleLogin = async () => {
+    const email = 'demo@example.com';
+    const password = 'password';
+
+    const res = await fetch(`${API_BASE}/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password }),
+    });
+    const { token } = await res.json();
+
+    const programsRes = await fetch(`${API_BASE}/user-programs/${email}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    const programsData = await programsRes.json();
+    const firstProgram = programsData.programs?.[0];
+    setProgram(firstProgram);
+
+    if (firstProgram) {
+      const brandRes = await fetch(
+        `${API_BASE}/api/branding-contact/${firstProgram.programId}`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      const brandData = await brandRes.json();
+      setBranding(brandData);
+    }
+
+    setLoggedIn(true);
+  };
+  const handleLogout = () => {
+    setLoggedIn(false);
+    setProgram(null);
+    setBranding(null);
+  };
   const handleSchedule = () => alert('Show schedule! (demo)');
 
   return (
@@ -52,12 +97,19 @@ export default function HomeScreen() {
             accessible
             accessibilityLabel="Boys State App Logo"
           />
-          <Text style={styles.title}>Welcome to Boys State!</Text>
+          <Text style={styles.title} testID="program-name">
+            {program ? `Welcome to ${program.programName}!` : 'Welcome to Boys State!'}
+          </Text>
           <Text style={styles.subtitle}>
             {loggedIn
-              ? "Check your schedule, explore resources, and make the most of your Boys State experience."
+              ? 'Check your schedule, explore resources, and make the most of your experience.'
               : "Log in to get started! You'll see your schedule and updates once you're signed in."}
           </Text>
+          {program && (
+            <Text style={styles.program} testID="assigned-program">
+              {`Program ID: ${program.programId}`}
+            </Text>
+          )}
         </View>
       </View>
     </LinearGradient>
@@ -146,6 +198,12 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: COLORS.white,
     opacity: 0.97,
+    textAlign: 'center',
+  },
+  program: {
+    fontSize: 16,
+    color: COLORS.white,
+    marginTop: 6,
     textAlign: 'center',
   },
 });
