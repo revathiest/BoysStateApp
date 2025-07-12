@@ -49,3 +49,4 @@ See [`AGENTS.md`](./AGENTS.md) in this repo for a full breakdown of all user rol
 * All logic/features must include automated tests and follow repo linting rules.
 * Submit pull requests with clear explanations and test coverage.
 * See [Backend Services](https://github.com/yourorg/boysstate-backend) and [Web Admin Portal](https://github.com/yourorg/boysstate-admin) for backend/admin changes.
+<!-- Repository Note: This project is not affiliated with or endorsed by The American Legion. -->

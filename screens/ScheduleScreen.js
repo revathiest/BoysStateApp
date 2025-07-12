@@ -1,9 +1,14 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
+import { getColors } from '../branding';
 
-export default function ScheduleScreen() {
+export default function ScheduleScreen({ branding = null }) {
+  const colors = getColors(branding);
   return (
-    <View style={styles.container} testID="schedule-screen">
+    <View
+      style={[styles.container, { backgroundColor: colors.background }]}
+      testID="schedule-screen"
+    >
       <Text accessibilityRole="header">Schedule Screen</Text>
     </View>
   );
@@ -15,6 +20,5 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'flex-start',
     paddingTop: 20,
-    backgroundColor: '#f2f2f2',
   },
 });

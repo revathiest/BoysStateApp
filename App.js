@@ -32,7 +32,7 @@ export default function App() {
       <LoginScreen onLoginSuccess={handleLoginSuccess} branding={branding} />
     );
   } else if (currentScreen === 'Schedule') {
-    ScreenComponent = <ScheduleScreen />;
+    ScreenComponent = <ScheduleScreen branding={branding} />;
   } else {
     ScreenComponent = (
       <HomeScreen
@@ -47,7 +47,7 @@ export default function App() {
   }
 
   return (
-    <SafeAreaView style={[styles.container, { paddingTop }]}>\
+    <SafeAreaView style={[styles.container, { paddingTop }]}>
       {ScreenComponent}
       <ExpoStatusBar style="light" />
     </SafeAreaView>
