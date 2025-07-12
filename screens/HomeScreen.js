@@ -1,11 +1,18 @@
-import React, { useEffect } from 'react';
-import { View, Text, Image, StyleSheet, TouchableOpacity, Dimensions, Platform, StatusBar } from 'react-native';
+import React from 'react';
+import {
+  View,
+  Text,
+  Image,
+  StyleSheet,
+  TouchableOpacity,
+  Dimensions,
+  Platform,
+  StatusBar,
+} from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { DEFAULT_COLORS, getColors, getAssets } from '../branding';
+import { getColors, getAssets } from '../branding';
 
 const { width } = Dimensions.get('window');
-
-const COLORS = { ...DEFAULT_COLORS };
 
 export default function HomeScreen({
   loggedIn = false,
@@ -15,18 +22,9 @@ export default function HomeScreen({
   onLogout,
   onSchedule,
 }) {
+  const colors = getColors(branding);
+  const { logo } = getAssets(branding);
 
-  useEffect(() => {
-    const merged = getColors(branding);
-    COLORS.primary = merged.primary;
-    COLORS.secondary = merged.secondary;
-    COLORS.accent = merged.accent;
-    COLORS.text = merged.text;
-    COLORS.white = merged.white;
-    COLORS.transparent = merged.transparent;
-  }, [branding]);
-
-  // Wrapper callbacks for header buttons
   const handleLoginPress = () => {
     onPressLogin && onPressLogin();
   };
@@ -39,17 +37,19 @@ export default function HomeScreen({
     onSchedule && onSchedule();
   };
 
-  const { logo } = getAssets(branding);
-
   return (
     <LinearGradient
-      colors={[COLORS.primary, COLORS.secondary]}
+      colors={[colors.primary, colors.secondary]}
       start={{ x: 0.2, y: 0.2 }}
       end={{ x: 1, y: 1 }}
       style={styles.gradient}
     >
-      {/* Header */}
-      <View style={styles.headerOuter}>
+      <View
+        style={[
+          styles.headerOuter,
+          { backgroundColor: 'rgba(32, 64, 128, 0.09)' },
+        ]}
+      >
         <View style={styles.headerInner}>
           {!loggedIn ? (
             <HeaderButton label="Login" onPress={handleLoginPress} />
@@ -62,9 +62,8 @@ export default function HomeScreen({
         </View>
       </View>
 
-      {/* Main Content */}
       <View style={styles.flexGrow}>
-        <View style={styles.container}>
+        <View style={[styles.container, { backgroundColor: colors.transparent }]}> 
           <Image
             source={logo}
             style={styles.logo}
@@ -72,16 +71,16 @@ export default function HomeScreen({
             accessible
             accessibilityLabel="Boys State App Logo"
           />
-          <Text style={styles.title} testID="program-name">
+          <Text style={[styles.title, { color: colors.white }]} testID="program-name">
             {program ? `Welcome to ${program.programName}!` : 'Welcome to Boys State!'}
           </Text>
-          <Text style={styles.subtitle}>
+          <Text style={[styles.subtitle, { color: colors.white }] }>
             {loggedIn
               ? 'Check your schedule, explore resources, and make the most of your experience.'
               : "Log in to get started! You'll see your schedule and updates once you're signed in."}
           </Text>
           {program && (
-            <Text style={styles.program} testID="assigned-program">
+            <Text style={[styles.program, { color: colors.white }]} testID="assigned-program">
               {`Program ID: ${program.programId}`}
             </Text>
           )}
@@ -103,13 +102,11 @@ const styles = StyleSheet.create({
   gradient: {
     flex: 1,
   },
-  // Header is OUTSIDE main content, padded for notch/safe area
   headerOuter: {
     paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight || 32 : 48,
     paddingBottom: 0,
     paddingHorizontal: 18,
     width: '100%',
-    backgroundColor: 'rgba(32, 64, 128, 0.09)', // slight glass effect
   },
   headerInner: {
     flexDirection: 'row',
@@ -127,7 +124,7 @@ const styles = StyleSheet.create({
     borderColor: 'rgba(255,255,255,0.16)',
   },
   headerButtonText: {
-    color: COLORS.white,
+    color: '#fff',
     fontWeight: 'bold',
     fontSize: 16,
     letterSpacing: 0.2,
@@ -135,7 +132,6 @@ const styles = StyleSheet.create({
     textShadowOffset: { width: 0, height: 1 },
     textShadowRadius: 4,
   },
-  // Main content fills available space below header, centers card
   flexGrow: {
     flex: 1,
     width: '100%',
@@ -145,7 +141,6 @@ const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
     width: width - 40,
-    backgroundColor: COLORS.transparent,
     borderRadius: 22,
     padding: 32,
     shadowColor: '#000',
@@ -162,7 +157,6 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 28,
     fontWeight: 'bold',
-    color: COLORS.white,
     marginBottom: 14,
     textAlign: 'center',
     textShadowColor: 'rgba(0,0,0,0.18)',
@@ -171,13 +165,11 @@ const styles = StyleSheet.create({
   },
   subtitle: {
     fontSize: 18,
-    color: COLORS.white,
     opacity: 0.97,
     textAlign: 'center',
   },
   program: {
     fontSize: 16,
-    color: COLORS.white,
     marginTop: 6,
     textAlign: 'center',
   },

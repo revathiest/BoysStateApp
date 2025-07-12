@@ -16,7 +16,8 @@ test('submits credentials and fetches branding', async () => {
         Promise.resolve({ programs: [{ programId: 'abc', programName: 'Test' }] }),
     })
     .mockResolvedValueOnce({
-      json: () => Promise.resolve({ colors: { primary: '#111', secondary: '#222' } }),
+      json: () =>
+        Promise.resolve({ colorPrimary: '#111', colorSecondary: '#222' }),
     });
 
   const onLoginSuccess = jest.fn();
@@ -39,7 +40,7 @@ test('submits credentials and fetches branding', async () => {
   expect(onLoginSuccess).toHaveBeenCalledWith({
     token: 't',
     program: { programId: 'abc', programName: 'Test' },
-    branding: { colors: { primary: '#111', secondary: '#222' } },
+    branding: { colorPrimary: '#111', colorSecondary: '#222' },
   });
   delete global.__DEV__;
 });

@@ -3,14 +3,20 @@ export const DEFAULT_COLORS = {
   secondary: '#1A6BC6',
   accent: '#FFD166',
   text: '#fff',
+  background: '#ffffff',
   white: '#fff',
   transparent: 'rgba(255,255,255,0.08)',
 };
 
 export function getColors(branding) {
   return {
-    ...DEFAULT_COLORS,
-    ...(branding && branding.colors),
+    primary: branding?.colorPrimary || DEFAULT_COLORS.primary,
+    secondary: branding?.colorSecondary || DEFAULT_COLORS.secondary,
+    accent: branding?.colorAccent || DEFAULT_COLORS.accent,
+    text: branding?.colorText || DEFAULT_COLORS.text,
+    background: branding?.colorBackground || DEFAULT_COLORS.background,
+    white: DEFAULT_COLORS.white,
+    transparent: DEFAULT_COLORS.transparent,
   };
 }
 
@@ -22,9 +28,8 @@ export const DEFAULT_ASSETS = {
 
 export function getAssets(branding) {
   return {
-    logo: branding && branding.logo ? { uri: branding.logo } : DEFAULT_ASSETS.logo,
-    icon: branding && branding.icon ? { uri: branding.icon } : DEFAULT_ASSETS.icon,
-    banner:
-      branding && branding.banner ? { uri: branding.banner } : DEFAULT_ASSETS.banner,
+    logo: branding?.logoUrl ? { uri: branding.logoUrl } : DEFAULT_ASSETS.logo,
+    icon: branding?.iconUrl ? { uri: branding.iconUrl } : DEFAULT_ASSETS.icon,
+    banner: branding?.bannerUrl ? { uri: branding.bannerUrl } : DEFAULT_ASSETS.banner,
   };
 }

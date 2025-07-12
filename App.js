@@ -32,7 +32,7 @@ export default function App() {
       <LoginScreen onLoginSuccess={handleLoginSuccess} branding={branding} />
     );
   } else if (currentScreen === 'Schedule') {
-    ScreenComponent = <ScheduleScreen />;
+    ScreenComponent = <ScheduleScreen branding={branding} />;
   } else {
     ScreenComponent = (
       <HomeScreen
