@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { getColors, getAssets } from '../branding';
+import { lighten } from '../utils/colors';
 
 const API_BASE = __DEV__
   ? 'http://192.168.1.171:3000'
@@ -59,7 +60,7 @@ export default function LoginScreen({ onLoginSuccess, branding = null }) {
 
   return (
     <LinearGradient
-      colors={[colors.primary, colors.secondary]}
+      colors={[colors.primary, lighten(colors.primary, 45)]}
       start={{ x: 0.2, y: 0.2 }}
       end={{ x: 1, y: 1 }}
       style={styles.gradient}
