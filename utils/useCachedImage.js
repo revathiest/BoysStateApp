@@ -20,11 +20,12 @@ export default function useCachedImage(uri) {
       try {
         const dir = CACHE_DIR;
         try {
-          await FileSystem.makeDirectoryAsync(dir, { intermediates: true });
-        } catch (err) {
-          if (!/Directory .* already exists/.test(String(err))) {
-            console.error('Failed to create cache directory', err);
+          const dirInfo = await FileSystem.getInfoAsync(dir);
+          if (!dirInfo.exists) {
+            await FileSystem.makeDirectoryAsync(dir, { intermediates: true });
           }
+        } catch (err) {
+          console.error('Failed to ensure cache directory', err);
         }
 
         const cacheFile = dir + sanitize(uri);

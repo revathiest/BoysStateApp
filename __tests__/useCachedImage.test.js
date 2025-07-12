@@ -14,23 +14,34 @@ afterEach(() => {
 });
 
 test('uses cached file when it exists', async () => {
-  FileSystem.getInfoAsync.mockResolvedValueOnce({ exists: true, uri: '/cache/images/x' });
+  FileSystem.getInfoAsync
+    .mockResolvedValueOnce({ exists: true })
+    .mockResolvedValueOnce({ exists: true, uri: '/cache/images/x' });
   const { getByTestId } = render(<Test uri="https://host/logo.png" />);
-  await waitFor(() => expect(getByTestId('img').props.source).toEqual({ uri: '/cache/images/x' }));
+  await waitFor(() =>
+    expect(getByTestId('img').props.source).toEqual({ uri: '/cache/images/x' })
+  );
+  expect(FileSystem.makeDirectoryAsync).not.toHaveBeenCalled();
   expect(FileSystem.downloadAsync).not.toHaveBeenCalled();
 });
 
-test('downloads file when not cached', async () => {
-  FileSystem.getInfoAsync.mockResolvedValueOnce({ exists: false });
+test('downloads file when not cached and directory is created', async () => {
+  FileSystem.getInfoAsync
+    .mockResolvedValueOnce({ exists: false })
+    .mockResolvedValueOnce({ exists: false });
   const { getByTestId } = render(<Test uri="https://host/logo.png" />);
   const target = '/cache/images/' + encodeURIComponent('https://host/logo.png');
-  await waitFor(() => expect(FileSystem.downloadAsync).toHaveBeenCalledWith('https://host/logo.png', target));
+  await waitFor(() =>
+    expect(FileSystem.downloadAsync).toHaveBeenCalledWith('https://host/logo.png', target)
+  );
   expect(FileSystem.makeDirectoryAsync).toHaveBeenCalledWith('/cache/images/', { intermediates: true });
   await waitFor(() => expect(getByTestId('img').props.source).toEqual({ uri: target }));
 });
 
 test('logs error and returns null on failure', async () => {
-  FileSystem.getInfoAsync.mockResolvedValueOnce({ exists: false });
+  FileSystem.getInfoAsync
+    .mockResolvedValueOnce({ exists: true })
+    .mockResolvedValueOnce({ exists: false });
   FileSystem.downloadAsync.mockRejectedValueOnce(new Error('fail'));
   const errSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
   render(<Test uri="https://host/logo.png" />);
