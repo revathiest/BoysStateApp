@@ -15,7 +15,7 @@ const API_BASE = __DEV__
   ? 'http://192.168.1.171:3000'
   : 'https://boysstateappservices.up.railway.app';
 
-export default function LoginScreen({ onLoginSuccess, branding = null }) {
+export default function LoginScreen({ onLoginSuccess, onCancel, branding = null }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [message, setMessage] = useState('');
@@ -100,6 +100,13 @@ export default function LoginScreen({ onLoginSuccess, branding = null }) {
             accessibilityRole="button"
           >
             <Text style={styles.buttonText}>Login</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => onCancel && onCancel()}
+            style={[styles.button, { backgroundColor: colors.secondary }]}
+            accessibilityRole="button"
+          >
+            <Text style={styles.buttonText}>Cancel</Text>
           </TouchableOpacity>
           {!!message && (
             <Text testID="login-message" style={styles.message}>
