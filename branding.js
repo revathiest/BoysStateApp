@@ -27,7 +27,10 @@ export const DEFAULT_ASSETS = {
 };
 
 function isValidUrl(value) {
-  return typeof value === 'string' && value.trim().length > 0;
+  if (typeof value !== 'string') return false;
+  const trimmed = value.trim();
+  if (!trimmed) return false;
+  return /^https?:\/\//i.test(trimmed);
 }
 
 export function getAssets(branding) {
