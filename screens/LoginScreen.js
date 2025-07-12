@@ -11,7 +11,7 @@ const API_BASE = __DEV__
   ? 'http://192.168.1.171:3000'
   : 'https://boysstateappservices.up.railway.app';
 
-export default function LoginScreen() {
+export default function LoginScreen({ onLoginSuccess }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [message, setMessage] = useState('');
@@ -26,6 +26,22 @@ export default function LoginScreen() {
       });
       const data = await res.json();
       if (data.token) {
+        const token = data.token;
+        const programsRes = await fetch(`${API_BASE}/user-programs/${email}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const programsData = await programsRes.json();
+        const firstProgram = programsData.programs?.[0];
+        let brandData = null;
+        if (firstProgram) {
+          const brandRes = await fetch(
+            `${API_BASE}/api/branding-contact/${firstProgram.programId}`,
+            { headers: { Authorization: `Bearer ${token}` } }
+          );
+          brandData = await brandRes.json();
+        }
+        onLoginSuccess &&
+          onLoginSuccess({ token, program: firstProgram, branding: brandData });
         setMessage('Logged in successfully!');
       } else {
         setMessage('Login failed');
