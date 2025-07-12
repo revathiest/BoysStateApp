@@ -10,8 +10,9 @@ import {
   StatusBar,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { getColors, getAssets } from '../branding';
+import { getColors, DEFAULT_ASSETS, isValidUrl } from '../branding';
 import { lighten } from '../utils/colors';
+import useCachedImage from '../utils/useCachedImage';
 
 const { width } = Dimensions.get('window');
 
@@ -24,7 +25,10 @@ export default function HomeScreen({
   onSchedule,
 }) {
   const colors = getColors(branding);
-  const { logo } = getAssets(branding);
+  const defaultLogo = DEFAULT_ASSETS.logo;
+  const remoteUrl = isValidUrl(branding?.logoUrl) ? branding.logoUrl : null;
+  const cachedLogo = useCachedImage(remoteUrl);
+  const logo = remoteUrl ? cachedLogo || defaultLogo : defaultLogo;
 
   const handleLoginPress = () => {
     onPressLogin && onPressLogin();

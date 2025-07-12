@@ -44,3 +44,20 @@ test('shows program ID when provided', () => {
     `Program ID: ${program.programId}`
   );
 });
+
+test('uses cached branding logo when available', () => {
+  jest.resetModules();
+  jest.doMock('../utils/useCachedImage', () => jest.fn(() => ({ uri: 'cached.png' })));
+  const Home = require('../screens/HomeScreen').default;
+  const { getByLabelText } = render(<Home branding={{ logoUrl: 'https://x/logo.png' }} />);
+  expect(getByLabelText('Boys State App Logo').props.source).toEqual({ uri: 'cached.png' });
+});
+
+test('falls back to default logo when cache missing', () => {
+  jest.resetModules();
+  jest.doMock('../utils/useCachedImage', () => jest.fn(() => null));
+  const { DEFAULT_ASSETS } = require('../branding');
+  const Home = require('../screens/HomeScreen').default;
+  const { getByLabelText } = render(<Home branding={{ logoUrl: 'https://x/logo.png' }} />);
+  expect(getByLabelText('Boys State App Logo').props.source).toBe(DEFAULT_ASSETS.logo);
+});

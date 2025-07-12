@@ -10,3 +10,8 @@ test('getAssets falls back to default logo when url invalid', () => {
   const assets = getAssets({ logoUrl: '' });
   expect(assets.logo).toBe(DEFAULT_ASSETS.logo);
 });
+
+test('getAssets falls back when url lacks protocol', () => {
+  const assets = getAssets({ logoUrl: '/path/to/logo.png' });
+  expect(assets.logo).toBe(DEFAULT_ASSETS.logo);
+});
