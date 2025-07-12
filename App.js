@@ -29,7 +29,7 @@ export default function App() {
   let ScreenComponent;
   if (currentScreen === 'Login') {
     ScreenComponent = (
-      <LoginScreen onLoginSuccess={handleLoginSuccess} />
+      <LoginScreen onLoginSuccess={handleLoginSuccess} branding={branding} />
     );
   } else if (currentScreen === 'Schedule') {
     ScreenComponent = <ScheduleScreen />;
