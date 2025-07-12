@@ -1,17 +1,11 @@
 import React, { useEffect } from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity, Dimensions, Platform, StatusBar } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import { DEFAULT_COLORS, getColors, getAssets } from '../branding';
 
 const { width } = Dimensions.get('window');
 
-const COLORS = {
-  primary: '#204080',
-  secondary: '#1A6BC6',
-  accent: '#FFD166',
-  text: '#fff',
-  white: '#fff',
-  transparent: 'rgba(255,255,255,0.08)',
-};
+const COLORS = { ...DEFAULT_COLORS };
 
 export default function HomeScreen({
   loggedIn = false,
@@ -23,10 +17,13 @@ export default function HomeScreen({
 }) {
 
   useEffect(() => {
-    if (branding && branding.colors) {
-      COLORS.primary = branding.colors.primary || COLORS.primary;
-      COLORS.secondary = branding.colors.secondary || COLORS.secondary;
-    }
+    const merged = getColors(branding);
+    COLORS.primary = merged.primary;
+    COLORS.secondary = merged.secondary;
+    COLORS.accent = merged.accent;
+    COLORS.text = merged.text;
+    COLORS.white = merged.white;
+    COLORS.transparent = merged.transparent;
   }, [branding]);
 
   // Wrapper callbacks for header buttons
@@ -41,6 +38,8 @@ export default function HomeScreen({
   const handleSchedulePress = () => {
     onSchedule && onSchedule();
   };
+
+  const { logo } = getAssets(branding);
 
   return (
     <LinearGradient
@@ -67,7 +66,7 @@ export default function HomeScreen({
       <View style={styles.flexGrow}>
         <View style={styles.container}>
           <Image
-            source={require('../assets/Boys State App Blue on Transparent.png')}
+            source={logo}
             style={styles.logo}
             resizeMode="contain"
             accessible
