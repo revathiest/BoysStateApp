@@ -26,3 +26,21 @@ test('logout button triggers callback', () => {
   fireEvent.press(getByText('Logout'));
   expect(onLogout).toHaveBeenCalled();
 });
+
+test('schedule button triggers callback', () => {
+  const onSchedule = jest.fn();
+  const { getByText } = render(
+    <HomeScreen loggedIn program={program} onSchedule={onSchedule} />
+  );
+  fireEvent.press(getByText('Schedule'));
+  expect(onSchedule).toHaveBeenCalled();
+});
+
+test('shows program ID when provided', () => {
+  const { getByTestId } = render(
+    <HomeScreen loggedIn program={program} />
+  );
+  expect(getByTestId('assigned-program').props.children).toBe(
+    `Program ID: ${program.programId}`
+  );
+});
