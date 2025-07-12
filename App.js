@@ -47,7 +47,7 @@ export default function App() {
   }
 
   return (
-    <SafeAreaView style={[styles.container, { paddingTop }]}>\
+    <SafeAreaView style={[styles.container, { paddingTop }]}>
       {ScreenComponent}
       <ExpoStatusBar style="light" />
     </SafeAreaView>
