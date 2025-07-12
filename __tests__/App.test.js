@@ -22,3 +22,11 @@ test('navigates to login screen when login pressed', () => {
   fireEvent.press(getByText('Login'));
   expect(getByTestId('login-screen')).toBeTruthy();
 });
+
+test('cancel from login returns to home screen', () => {
+  const App = require('../App').default;
+  const { getByText, getByTestId } = render(<App />);
+  fireEvent.press(getByText('Login'));
+  fireEvent.press(getByText('Cancel'));
+  expect(getByTestId('program-name')).toBeTruthy();
+});

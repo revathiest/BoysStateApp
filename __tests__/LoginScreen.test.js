@@ -7,6 +7,13 @@ test('displays Login Screen header', () => {
   expect(getByRole('header').props.children).toBe('Login Screen');
 });
 
+test('calls onCancel when cancel pressed', () => {
+  const onCancel = jest.fn();
+  const { getByText } = render(<LoginScreen onCancel={onCancel} />);
+  fireEvent.press(getByText('Cancel'));
+  expect(onCancel).toHaveBeenCalled();
+});
+
 test('submits credentials and fetches branding', async () => {
   global.__DEV__ = true;
   fetch
@@ -42,5 +49,22 @@ test('submits credentials and fetches branding', async () => {
     program: { programId: 'abc', programName: 'Test' },
     branding: { colorPrimary: '#111', colorSecondary: '#222' },
   });
+  delete global.__DEV__;
+});
+
+test('shows error message when login fails', async () => {
+  global.__DEV__ = true;
+  fetch.mockResolvedValueOnce({ json: () => Promise.resolve({}) });
+
+  const { getByPlaceholderText, getByText, getByTestId } = render(
+    <LoginScreen />
+  );
+  fireEvent.changeText(getByPlaceholderText('Email'), 'fail@example.com');
+  fireEvent.changeText(getByPlaceholderText('Password'), 'pass');
+  fireEvent.press(getByText('Login'));
+
+  await waitFor(() => getByTestId('login-message'));
+
+  expect(getByTestId('login-message').props.children).toBe('Login failed');
   delete global.__DEV__;
 });
