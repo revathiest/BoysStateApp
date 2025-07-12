@@ -61,3 +61,11 @@ test('falls back to default logo when cache missing', () => {
   const { getByLabelText } = render(<Home branding={{ logoUrl: 'https://x/logo.png' }} />);
   expect(getByLabelText('Boys State App Logo').props.source).toBe(DEFAULT_ASSETS.logo);
 });
+
+test('uses default logo when no branding supplied', () => {
+  jest.resetModules();
+  const { DEFAULT_ASSETS } = require('../branding');
+  const Home = require('../screens/HomeScreen').default;
+  const { getByLabelText } = render(<Home />);
+  expect(getByLabelText('Boys State App Logo').props.source).toBe(DEFAULT_ASSETS.logo);
+});
