@@ -26,10 +26,22 @@ export const DEFAULT_ASSETS = {
   banner: null,
 };
 
+function isValidUrl(value) {
+  return typeof value === 'string' && value.trim().length > 0;
+}
+
 export function getAssets(branding) {
   return {
-    logo: branding?.logoUrl ? { uri: branding.logoUrl } : DEFAULT_ASSETS.logo,
-    icon: branding?.iconUrl ? { uri: branding.iconUrl } : DEFAULT_ASSETS.icon,
-    banner: branding?.bannerUrl ? { uri: branding.bannerUrl } : DEFAULT_ASSETS.banner,
+    logo: isValidUrl(branding?.logoUrl)
+      ? { uri: branding.logoUrl }
+      : DEFAULT_ASSETS.logo,
+    icon: isValidUrl(branding?.iconUrl)
+      ? { uri: branding.iconUrl }
+      : DEFAULT_ASSETS.icon,
+    banner: isValidUrl(branding?.bannerUrl)
+      ? { uri: branding.bannerUrl }
+      : DEFAULT_ASSETS.banner,
   };
 }
+
+export { isValidUrl };
