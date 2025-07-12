@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity, Dimensions, Platform, StatusBar } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 
@@ -13,14 +13,14 @@ const COLORS = {
   transparent: 'rgba(255,255,255,0.08)',
 };
 
-const API_BASE = __DEV__
-  ? 'http://192.168.1.171:3000'
-  : 'https://boysstateappservices.up.railway.app';
-
-export default function HomeScreen() {
-  const [loggedIn, setLoggedIn] = useState(false);
-  const [program, setProgram] = useState(null);
-  const [branding, setBranding] = useState(null);
+export default function HomeScreen({
+  loggedIn = false,
+  program = null,
+  branding = null,
+  onPressLogin,
+  onLogout,
+  onSchedule,
+}) {
 
   useEffect(() => {
     if (branding && branding.colors) {
@@ -29,42 +29,18 @@ export default function HomeScreen() {
     }
   }, [branding]);
 
-  // Handlers
-  const handleLogin = async () => {
-    const email = 'demo@example.com';
-    const password = 'password';
-
-    const res = await fetch(`${API_BASE}/login`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password }),
-    });
-    const { token } = await res.json();
-
-    const programsRes = await fetch(`${API_BASE}/user-programs/${email}`, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    const programsData = await programsRes.json();
-    const firstProgram = programsData.programs?.[0];
-    setProgram(firstProgram);
-
-    if (firstProgram) {
-      const brandRes = await fetch(
-        `${API_BASE}/api/branding-contact/${firstProgram.programId}`,
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-      const brandData = await brandRes.json();
-      setBranding(brandData);
-    }
-
-    setLoggedIn(true);
+  // Wrapper callbacks for header buttons
+  const handleLoginPress = () => {
+    onPressLogin && onPressLogin();
   };
-  const handleLogout = () => {
-    setLoggedIn(false);
-    setProgram(null);
-    setBranding(null);
+
+  const handleLogoutPress = () => {
+    onLogout && onLogout();
   };
-  const handleSchedule = () => alert('Show schedule! (demo)');
+
+  const handleSchedulePress = () => {
+    onSchedule && onSchedule();
+  };
 
   return (
     <LinearGradient
@@ -77,11 +53,11 @@ export default function HomeScreen() {
       <View style={styles.headerOuter}>
         <View style={styles.headerInner}>
           {!loggedIn ? (
-            <HeaderButton label="Login" onPress={handleLogin} />
+            <HeaderButton label="Login" onPress={handleLoginPress} />
           ) : (
             <>
-              <HeaderButton label="Schedule" onPress={handleSchedule} />
-              <HeaderButton label="Logout" onPress={handleLogout} />
+              <HeaderButton label="Schedule" onPress={handleSchedulePress} />
+              <HeaderButton label="Logout" onPress={handleLogoutPress} />
             </>
           )}
         </View>
