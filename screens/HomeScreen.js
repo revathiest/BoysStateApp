@@ -11,8 +11,9 @@ import {
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { getColors, DEFAULT_ASSETS, isValidUrl } from '../branding';
-import { lighten } from '../utils/colors';
+import { lighten, getContrastTextColor } from '../utils/colors';
 import useCachedImage from '../utils/useCachedImage';
+import Button from '../components/Button';
 
 const { width } = Dimensions.get('window');
 
@@ -57,11 +58,11 @@ export default function HomeScreen({
       >
         <View style={styles.headerInner}>
           {!loggedIn ? (
-            <HeaderButton label="Login" onPress={handleLoginPress} />
+            <Button title="Login" color={colors.secondary} onPress={handleLoginPress} />
           ) : (
             <>
-              <HeaderButton label="Schedule" onPress={handleSchedulePress} />
-              <HeaderButton label="Logout" onPress={handleLogoutPress} />
+              <Button title="Schedule" color={colors.secondary} onPress={handleSchedulePress} />
+              <Button title="Logout" color={colors.secondary} onPress={handleLogoutPress} />
             </>
           )}
         </View>
@@ -95,14 +96,6 @@ export default function HomeScreen({
   );
 }
 
-function HeaderButton({ label, onPress }) {
-  return (
-    <TouchableOpacity style={styles.headerButton} onPress={onPress} activeOpacity={0.7}>
-      <Text style={styles.headerButtonText}>{label}</Text>
-    </TouchableOpacity>
-  );
-}
-
 const styles = StyleSheet.create({
   gradient: {
     flex: 1,
@@ -118,24 +111,6 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
     alignItems: 'center',
     minHeight: 54,
-  },
-  headerButton: {
-    marginLeft: 12,
-    paddingVertical: 6,
-    paddingHorizontal: 18,
-    borderRadius: 999,
-    backgroundColor: 'rgba(255,255,255,0.15)',
-    borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.16)',
-  },
-  headerButtonText: {
-    color: '#fff',
-    fontWeight: 'bold',
-    fontSize: 16,
-    letterSpacing: 0.2,
-    textShadowColor: 'rgba(0,0,0,0.10)',
-    textShadowOffset: { width: 0, height: 1 },
-    textShadowRadius: 4,
   },
   flexGrow: {
     flex: 1,

@@ -10,6 +10,7 @@ import {
 import { LinearGradient } from 'expo-linear-gradient';
 import { getColors, getAssets } from '../branding';
 import { lighten } from '../utils/colors';
+import Button from '../components/Button';
 
 const API_BASE = __DEV__
   ? 'http://192.168.1.171:3000'
@@ -94,20 +95,14 @@ export default function LoginScreen({ onLoginSuccess, onCancel, branding = null 
             secureTextEntry
             style={styles.input}
           />
-          <TouchableOpacity
-            onPress={handleLogin}
-            style={[styles.button, { backgroundColor: colors.primary }]}
-            accessibilityRole="button"
-          >
-            <Text style={styles.buttonText}>Login</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => onCancel && onCancel()}
-            style={[styles.button, { backgroundColor: colors.secondary }]}
-            accessibilityRole="button"
-          >
-            <Text style={styles.buttonText}>Cancel</Text>
-          </TouchableOpacity>
+            <Button
+              title="Login"
+              onPress={handleLogin}
+            />
+            <Button
+              title="Cancel"
+              onPress={() => onCancel && onCancel()}
+            />
           {!!message && (
             <Text testID="login-message" style={styles.message}>
               {message}
@@ -152,16 +147,6 @@ const styles = StyleSheet.create({
     marginTop: 12,
     backgroundColor: '#fff',
     borderRadius: 4,
-  },
-  button: {
-    marginTop: 20,
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 4,
-  },
-  buttonText: {
-    color: '#fff',
-    fontWeight: 'bold',
   },
   message: {
     marginTop: 12,

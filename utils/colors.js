@@ -14,3 +14,18 @@ export function lighten(hex, percent) {
   b = Math.min(255, Math.max(0, b));
   return `#${((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1)}`;
 }
+
+// Accepts a hex color string like "#3366cc"
+export function getContrastTextColor(bgColor) {
+  // Remove # if present
+  const color = bgColor.replace('#', '');
+  // Parse r, g, b values
+  const r = parseInt(color.substring(0,2), 16);
+  const g = parseInt(color.substring(2,4), 16);
+  const b = parseInt(color.substring(4,6), 16);
+  // Calculate luminance
+  const luminance = (0.299*r + 0.587*g + 0.114*b) / 255;
+  // If it's bright, return black. If it's dark, return white.
+  return luminance > 0.6 ? '#000' : '#fff';
+}
+
