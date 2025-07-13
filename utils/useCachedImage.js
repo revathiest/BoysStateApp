@@ -3,33 +3,14 @@ import * as FileSystem from 'expo-file-system';
 
 const CACHE_DIR = FileSystem.cacheDirectory + 'images/';
 
-async function ensureDirectoryRecursive(dir) {
-  let base = '';
-  let path = dir;
-  if (path.startsWith('file://')) {
-    base = 'file://';
-    path = path.slice(7);
-  } else if (path.startsWith('/')) {
-    base = '/';
-    path = path.slice(1);
+function getCacheFile(uri) {
+  // Use the last segment of the URL, or encode if not possible
+  try {
+    const fileName = uri.split('/').pop() || encodeURIComponent(uri);
+    return CACHE_DIR + fileName;
+  } catch {
+    return CACHE_DIR + encodeURIComponent(uri);
   }
-  const parts = path.split('/').filter(Boolean);
-  let current = base;
-  for (const part of parts) {
-    current += part + '/';
-    try {
-      const info = await FileSystem.getInfoAsync(current);
-      if (!info.exists) {
-        await FileSystem.makeDirectoryAsync(current, { intermediates: true });
-      }
-    } catch (err) {
-      await FileSystem.makeDirectoryAsync(current, { intermediates: true });
-    }
-  }
-}
-
-function sanitize(uri) {
-  return encodeURIComponent(uri);
 }
 
 export default function useCachedImage(uri) {
@@ -39,27 +20,27 @@ export default function useCachedImage(uri) {
     let cancelled = false;
 
     async function load() {
-      if (!uri) {
-        return;
-      }
+      if (!uri) return;
       try {
-        const dir = CACHE_DIR;
-        try {
-          await ensureDirectoryRecursive(dir);
-        } catch (err) {
-          console.error('Failed to ensure cache directory', err);
+        // Ensure the cache directory exists
+        const dirInfo = await FileSystem.getInfoAsync(CACHE_DIR);
+        if (!dirInfo.exists) {
+          await FileSystem.makeDirectoryAsync(CACHE_DIR, { intermediates: true });
         }
 
-        const cacheFile = dir + sanitize(uri);
+        const cacheFile = getCacheFile(uri);
+
+        // Check if cached file exists
         const info = await FileSystem.getInfoAsync(cacheFile);
         if (info.exists) {
           if (!cancelled) setSource({ uri: info.uri });
         } else {
+          // Download and cache
           const download = await FileSystem.downloadAsync(uri, cacheFile);
           if (!cancelled) setSource({ uri: download.uri });
         }
       } catch (err) {
-        console.error('Failed to load remote image', err);
+        console.error('Image caching error:', err);
         if (!cancelled) setSource(null);
       }
     }
