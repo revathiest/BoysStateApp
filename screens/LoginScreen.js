@@ -6,11 +6,14 @@ import {
   TextInput,
   TouchableOpacity,
   Image,
+  Dimensions
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { getColors, getAssets } from '../branding';
 import { lighten } from '../utils/colors';
 import Button from '../components/Button';
+
+const { width } = Dimensions.get('window');
 
 const API_BASE = __DEV__
   ? 'http://192.168.1.171:3000'
@@ -126,9 +129,14 @@ const styles = StyleSheet.create({
   },
   container: {
     alignItems: 'center',
-    width: '90%',
+    width: width - 40,
     borderRadius: 22,
     padding: 32,
+    shadowColor: '#000',
+    shadowOpacity: 0.07,
+    shadowRadius: 14,
+    shadowOffset: { width: 0, height: 7 },
+    elevation: 8,
   },
   logo: {
     width: 200,

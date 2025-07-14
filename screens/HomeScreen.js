@@ -85,11 +85,6 @@ export default function HomeScreen({
               ? 'Check your schedule, explore resources, and make the most of your experience.'
               : "Log in to get started! You'll see your schedule and updates once you're signed in."}
           </Text>
-          {program && (
-            <Text style={[styles.program, { color: colors.white }]} testID="assigned-program">
-              {`Program ID: ${program.programId}`}
-            </Text>
-          )}
         </View>
       </View>
     </LinearGradient>
@@ -115,8 +110,9 @@ const styles = StyleSheet.create({
   flexGrow: {
     flex: 1,
     width: '100%',
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
     alignItems: 'center',
+    padding: 64
   },
   container: {
     alignItems: 'center',
