@@ -14,11 +14,10 @@ afterEach(() => {
 });
 
 test('uses cached file when it exists', async () => {
-  const target = '/cache/images/' + encodeURIComponent('https://host/logo.png');
+  const target = '/cache/images/logo.png';
   FileSystem.getInfoAsync
-    .mockResolvedValueOnce({ exists: true }) // /cache/
-    .mockResolvedValueOnce({ exists: true }) // /cache/images/
-    .mockResolvedValueOnce({ exists: true, uri: target }); // cache file
+    .mockResolvedValueOnce({ exists: true }) // cache directory exists
+    .mockResolvedValueOnce({ exists: true, uri: target }); // cached file exists
   const { getByTestId } = render(<Test uri="https://host/logo.png" />);
   await waitFor(() =>
     expect(getByTestId('img').props.source).toEqual({ uri: target })
@@ -29,35 +28,37 @@ test('uses cached file when it exists', async () => {
 
 test('downloads file when not cached and directory path created', async () => {
   FileSystem.getInfoAsync
-    .mockResolvedValueOnce({ exists: false }) // /cache/
-    .mockResolvedValueOnce({ exists: false }) // /cache/images/
-    .mockResolvedValueOnce({ exists: false }); // cache file
+    .mockResolvedValueOnce({ exists: false }) // cache dir missing
+    .mockResolvedValueOnce({ exists: false }); // cache file missing
   const { getByTestId } = render(<Test uri="https://host/logo.png" />);
-  const target = '/cache/images/' + encodeURIComponent('https://host/logo.png');
+  const target = '/cache/images/logo.png';
   await waitFor(() =>
-    expect(FileSystem.downloadAsync).toHaveBeenCalledWith('https://host/logo.png', target)
+    expect(FileSystem.downloadAsync).toHaveBeenCalledWith(
+      'https://host/logo.png',
+      target
+    )
   );
-  expect(FileSystem.makeDirectoryAsync).toHaveBeenNthCalledWith(1, '/cache/', { intermediates: true });
-  expect(FileSystem.makeDirectoryAsync).toHaveBeenNthCalledWith(2, '/cache/images/', { intermediates: true });
-  await waitFor(() => expect(getByTestId('img').props.source).toEqual({ uri: target }));
+  expect(FileSystem.makeDirectoryAsync).toHaveBeenCalledWith('/cache/images/', {
+    intermediates: true,
+  });
+  await waitFor(() =>
+    expect(getByTestId('img').props.source).toEqual({ uri: target })
+  );
 });
 
-test('creates missing parent directories recursively', async () => {
+test('creates cache directory when missing', async () => {
   FileSystem.getInfoAsync
-    .mockResolvedValueOnce({ exists: false }) // /cache/
-    .mockResolvedValueOnce({ exists: false }) // /cache/images/
-    .mockResolvedValueOnce({ exists: false }); // cache file
+    .mockResolvedValueOnce({ exists: false }) // cache dir missing
+    .mockResolvedValueOnce({ exists: false }); // cache file missing
   render(<Test uri="https://host/logo.png" />);
   await waitFor(() => expect(FileSystem.makeDirectoryAsync).toHaveBeenCalled());
-  expect(FileSystem.makeDirectoryAsync).toHaveBeenNthCalledWith(1, '/cache/', { intermediates: true });
-  expect(FileSystem.makeDirectoryAsync).toHaveBeenNthCalledWith(2, '/cache/images/', { intermediates: true });
+  expect(FileSystem.makeDirectoryAsync).toHaveBeenCalledWith('/cache/images/', { intermediates: true });
 });
 
 test('logs error and returns null on failure', async () => {
   FileSystem.getInfoAsync
-    .mockResolvedValueOnce({ exists: true }) // /cache/
-    .mockResolvedValueOnce({ exists: true }) // /cache/images/
-    .mockResolvedValueOnce({ exists: false }); // cache file
+    .mockResolvedValueOnce({ exists: true }) // cache dir exists
+    .mockResolvedValueOnce({ exists: false }); // cache file missing
   FileSystem.downloadAsync.mockRejectedValueOnce(new Error('fail'));
   const errSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
   render(<Test uri="https://host/logo.png" />);

@@ -36,12 +36,12 @@ test('schedule button triggers callback', () => {
   expect(onSchedule).toHaveBeenCalled();
 });
 
-test('shows program ID when provided', () => {
+test('shows program name when provided', () => {
   const { getByTestId } = render(
     <HomeScreen loggedIn program={program} />
   );
-  expect(getByTestId('assigned-program').props.children).toBe(
-    `Program ID: ${program.programId}`
+  expect(getByTestId('program-name').props.children).toBe(
+    `Welcome to ${program.programName}!`
   );
 });
 
